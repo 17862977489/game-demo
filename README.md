@@ -1,0 +1,2 @@
+# game-demo
+wechat game
