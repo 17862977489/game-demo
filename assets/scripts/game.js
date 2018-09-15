@@ -20,7 +20,7 @@ cc.Class({
             type: cc.Node
         },
         // bg的移动速度
-        moveSpeed: 1.8,
+        moveSpeed: 2,
         // 子弹
         bulletPrefab: {
             default: null,
@@ -101,27 +101,8 @@ cc.Class({
         var bg2BoundingBox = bg2.getBoundingBox();
         bg3.setPosition(bg2BoundingBox.xMin,bg2BoundingBox.yMax);
     },
-
-    // 子弹和敌机碰撞检测
-    crash: function() {
-        var Bullets = cc.find("Bullets", this.node);
-        var Enemies = cc.find("Enemies", this.node);
-        for(let i = 0; i < Bullets.childrenCount; i++) {
-            for(let j = 0; j < Enemies.childrenCount; j++) {
-                var bulletPos = Bullets.children[i].getPosition();
-                var enemyPos = Enemies.children[j].getPosition();
-                var enemyComp = Enemies.children[j].getComponent('enemy');
-                var hitRadius = enemyComp.hitRadius;
-                if(bulletPos.sub(enemyPos).mag() < hitRadius) {
-                    Bullets.children[i].destroy();
-                    Enemies.children[j].destroy();
-                }
-            }
-        }
-    },
   
     update:function(dt){
-        this.crash();
         this.bgMove(this.bg,this.moveSpeed);
         this.checkBgReset(this.bg);
         // 隔段时间产生新子弹

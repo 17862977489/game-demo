@@ -19,7 +19,8 @@ cc.Class({
     },
 
     // LIFE-CYCLE CALLBACKS:
-    onload() {
+    onLoad() {
+        this.node.blood = this.node.getComponent('enemy').blood;
     },
 
     overBorder: function() {
@@ -32,12 +33,29 @@ cc.Class({
         this.node.y -= this.speed;
     },
 
-    start () {
-
+    // 子弹和敌机碰撞检测
+    crash: function() {
+        var Bullets = cc.find("Bullets", this.game.node);
+        var Enemies = cc.find("Enemies", this.game.node);
+        for(let i = 0; i < Bullets.childrenCount; i++) {
+            for(let j = 0; j < Enemies.childrenCount; j++) {
+                var bulletPos = Bullets.children[i].getPosition();
+                var enemyPos = Enemies.children[j].getPosition();
+                var enemyComp = Enemies.children[j].getComponent('enemy');
+                var hitRadius = enemyComp.hitRadius;
+                if(bulletPos.sub(enemyPos).mag() < hitRadius) {
+                    Enemies.children[j].blood--;
+                    Bullets.children[i].destroy();
+                    if (Enemies.children[j].blood<=0) {
+                        Enemies.children[j].destroy();
+                    }
+                }
+            }
+        }
     },
 
     update (dt) {
-        this.game.crash();
+        this.crash();
         // 超出边界销毁
         this.overBorder();
         // 敌机移动
