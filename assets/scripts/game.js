@@ -26,6 +26,11 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+        // 敌机
+        enemyPrefab:{
+            default: [],
+            type: cc.Prefab
+        },
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -34,9 +39,37 @@ cc.Class({
         // 背景位置
         this.fixBgPos(this.bg[0],this.bg[1],this.bg[2]);
         // 初始化计时器
-        this.timer = 0;
+        this.bulletTimer = 0;
+        this.enemyTimer = 0;
         // 生成子弹
         this.spawnNewBullet();
+        // 生成敌机
+        this.spawnNewEnemy();
+    },
+
+    spawnNewEnemy: function() {
+        var num = Math.floor(Math.random()*9);
+        var newEnemy = cc.instantiate(this.enemyPrefab[num]);
+        this.node.addChild(newEnemy);
+        this.enemyWidth = newEnemy.width/2;
+        var enemyX;
+        if(Math.random() > 0.5) {
+            enemyX = Math.random()*320 - this.enemyWidth;
+        } else {
+            enemyX = -Math.random()*320 + this.enemyWidth;
+        }
+        newEnemy.setPosition(this.getEnemyPosition(enemyX, 700));
+        newEnemy.getComponent('enemy').game = this;
+        this.enemyTimer = 0;
+    },
+
+    getEnemyPosition: function(x, y) {
+        // 敌机x 坐标
+        var randX = x;
+        // 敌机y 坐标
+        var randY = y;
+        // 返回敌机坐标
+        return cc.v2(randX, randY);
     },
 
     spawnNewBullet: function() {
@@ -50,7 +83,7 @@ cc.Class({
         // 为子弹设置位置
         newBullet.setPosition(this.getBulletPosition(this.playerX, this.playerY));
         newBullet.getComponent('bullet').game = this;
-        this.timer = 0;
+        this.bulletTimer = 0;
     },
 
     getBulletPosition: function(x, y) {
@@ -74,13 +107,16 @@ cc.Class({
         this.bgMove(this.bg,this.moveSpeed);
         this.checkBgReset(this.bg);
         // 隔段时间产生新子弹
-
-        cc.log(dt)
-        if (this.timer > 0.15) {
-            this.spawnNewBullet();
-            return;
+        if (this.enemyTimer > 0.8) {
+            this.spawnNewEnemy();
+        } else {
+            this.enemyTimer += dt;
         }
-        this.timer += dt;
+        if (this.bulletTimer > 0.15) {
+            this.spawnNewBullet();
+        } else {
+           this.bulletTimer += dt; 
+        }
     },
 
     //背景滚动
