@@ -35,7 +35,7 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    onLoad :function() {
+    onLoad: function() {
         // 背景位置
         this.fixBgPos(this.bg[0],this.bg[1],this.bg[2]);
         // 初始化计时器
@@ -50,7 +50,7 @@ cc.Class({
     spawnNewEnemy: function() {
         var num = Math.floor(Math.random()*9);
         var newEnemy = cc.instantiate(this.enemyPrefab[num]);
-        this.node.addChild(newEnemy);
+        cc.find("Enemies", this.node).addChild(newEnemy);
         this.enemyWidth = newEnemy.width/2;
         var enemyX;
         if(Math.random() > 0.5) {
@@ -75,8 +75,7 @@ cc.Class({
     spawnNewBullet: function() {
         // 使用给定的模板在场景中生成一个新节点
         var newBullet = cc.instantiate(this.bulletPrefab);
-        // 将新增的节点添加到 Canvas 节点下面
-        this.node.addChild(newBullet);
+        cc.find("Bullets", this.node).addChild(newBullet);
         // 飞机的位置
         this.playerX = this.player.x;
         this.playerY = this.player.y + this.player.height/2;
@@ -102,8 +101,27 @@ cc.Class({
         var bg2BoundingBox = bg2.getBoundingBox();
         bg3.setPosition(bg2BoundingBox.xMin,bg2BoundingBox.yMax);
     },
+
+    // 子弹和敌机碰撞检测
+    crash: function() {
+        var Bullets = cc.find("Bullets", this.node);
+        var Enemies = cc.find("Enemies", this.node);
+        for(let i = 0; i < Bullets.childrenCount; i++) {
+            for(let j = 0; j < Enemies.childrenCount; j++) {
+                var bulletPos = Bullets.children[i].getPosition();
+                var enemyPos = Enemies.children[j].getPosition();
+                var enemyComp = Enemies.children[j].getComponent('enemy');
+                var hitRadius = enemyComp.hitRadius;
+                if(bulletPos.sub(enemyPos).mag() < hitRadius) {
+                    Bullets.children[i].destroy();
+                    Enemies.children[j].destroy();
+                }
+            }
+        }
+    },
   
     update:function(dt){
+        this.crash();
         this.bgMove(this.bg,this.moveSpeed);
         this.checkBgReset(this.bg);
         // 隔段时间产生新子弹

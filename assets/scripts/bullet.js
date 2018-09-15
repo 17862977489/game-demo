@@ -12,7 +12,6 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        pickRadius: 0,
         //子弹速度
         bulletSpeed: 26,
     },
@@ -22,7 +21,7 @@ cc.Class({
     },
     
     onLoad() {
-        
+
     },
 
     overBorder: function() {
@@ -31,7 +30,7 @@ cc.Class({
         }
     },
 
-    bulletMove:function() {
+    bulletMove: function() {
         this.node.y += this.bulletSpeed;
     },
 

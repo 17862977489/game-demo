@@ -100,7 +100,7 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_id": "879IcBh/tGx5GNCY+ezkFp"
+    "_id": "1blVZZsvBA54fRltB3wn7P"
   },
   {
     "__type__": "f9370eB1fRJ86HoSCApUCcZ",
@@ -111,8 +111,9 @@
     },
     "_enabled": true,
     "speed": 6,
-    "blood": 0,
-    "_id": "89lDTdscxNZrA+BgUcbky1"
+    "blood": 1,
+    "hitRadius": 31,
+    "_id": "7dPg1LSP9IMpBiXoClY0au"
   },
   {
     "__type__": "cc.PrefabInfo",
